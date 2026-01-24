@@ -1,0 +1,5 @@
+create a snake game where a snake's size keeps on increasing when ever it eats an apple.
+the apple spawns in different places after it has been eaten.
+the snake is controlled using keyboard.
+if snake hits the edges of monitor then game is over.
+have scores and highscore.
