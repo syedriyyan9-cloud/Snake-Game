@@ -10,5 +10,5 @@ class Setting:
         self.COLOR_BLUE = (0,0,255)
         self.COLOR_GREEN = (0,255,0)
         
-        self.player_speed = 1
+        self.player_speed = 2.5
 
