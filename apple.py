@@ -19,7 +19,7 @@ class Apple:
     def random_position(self):
         """Draws apple at random position on screen"""
         self.x = random.randint(0,self.screen_rect.width)
-        self.y = random.randint(0,self.screen_rect.height)
+        self.y = random.randint(0,self.screen_rect.height - 20)
         self.rect.x, self.rect.y = self.x, self.y
 
     def draw(self):

@@ -21,6 +21,7 @@ class SnakeGame:
         self.player = Snake(self)
         self.apple = Apple(self)
         self.player_body = pygame.sprite.Group()
+        self.rotate = ''
 
     def check_events(self):
         """Check for events"""
@@ -28,46 +29,65 @@ class SnakeGame:
             if event.type == pygame.QUIT:
                 sys.exit()
             self._check_down_event(event)
-            self._check_up_event(event)
+            # self._check_up_event(event)
 
     def _check_down_event(self, event):
         """check for key presses"""
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_w:
                 self.player.move_up = True
-            if event.key == pygame.K_s:
+                self.player.move_down = False
+                self.player.move_left = False
+                self.player.move_right = False
+                self.rotate = 'up'
+            elif event.key == pygame.K_s:
                 self.player.move_down = True
-            if event.key == pygame.K_a:
+                self.player.move_up = False
+                # self.player.move_down = False
+                self.player.move_left = False
+                self.player.move_right = False
+                self.rotate = 'down'
+            elif event.key == pygame.K_a:
                 self.player.move_left = True
-            if event.key == pygame.K_d:
+                self.player.move_up = False
+                self.player.move_down = False
+                # self.player.move_left = False
+                self.player.move_right = False
+                self.rotate = 'left'
+            elif event.key == pygame.K_d:
                 self.player.move_right = True
-            if event.key == pygame.K_q:
+                self.player.move_up = False
+                self.player.move_down = False
+                self.player.move_left = False
+                # self.player.move_right = False
+                self.rotate = 'right'
+            elif event.key == pygame.K_q:
                 sys.exit()
 
-    def _check_up_event(self, event):
-        """check for key releases"""
-        if event.type == pygame.KEYUP:
-            if event.key == pygame.K_w:
-                self.player.move_up = False
-            if event.key == pygame.K_s:
-                self.player.move_down = False
-            if event.key == pygame.K_a:
-                self.player.move_left = False
-            if event.key == pygame.K_d:
-                self.player.move_right = False
+    # def _check_up_event(self, event):
+    #     """check for key releases"""
+    #     if event.type == pygame.KEYUP:
+    #         if event.key == pygame.K_w:
+    #             self.player.move_up = False
+    #         if event.key == pygame.K_s:
+    #             self.player.move_down = False
+    #         if event.key == pygame.K_a:
+    #             self.player.move_left = False
+    #         if event.key == pygame.K_d:
+    #             self.player.move_right = False
 
     def detect_collision(self):
         """Detect colision"""
-        collision = pygame.sprite.collide_rect(self.apple,self.player)
-        if collision:
+        if(collision := pygame.sprite.collide_rect(self.apple,self.player)):
             self.apple.random_position()
             self.add_body()
 
     def add_body(self):
         """Add player body"""
         body = Body(self)
+        # body.x
         self.player_body.add(body)
-        print(self.player_body)
+        # print(self.player_body)
 
     def move_body(self):
         """Move player body"""
@@ -79,12 +99,24 @@ class SnakeGame:
 
     def set_body_position(self, body, sprite):
         """Change position of body pieces"""
-        sprite.rect.x = body.x - 100
+        sprite.rect.x = body.x - 20
         sprite.rect.y = body.y
+        self.change_body_direction(sprite, body)
 
-    def change_body_direction(self):
+    def change_body_direction(self, sprite, body):
         """change the direction of body based on user input"""
-        pass # to be completed tomorrow
+        if self.rotate == 'up':
+            sprite.rect.x = body.x
+            sprite.rect.y = body.y + 20
+        elif self.rotate == 'down':
+            sprite.rect.x = body.x
+            sprite.rect.y = body.y - 20
+        elif self.rotate == 'right':
+            sprite.rect.x = body.x - 20
+            sprite.rect.y = body.y
+        elif self.rotate == 'left':
+            sprite.rect.x = body.x + 20
+            sprite.rect.y = body.y
 
     def update_screen(self):
         """updates the screen"""
@@ -103,7 +135,6 @@ class SnakeGame:
             self.move_body()
             self.update_screen()
             
-
 if __name__ == '__main__':
     game = SnakeGame()
     game.run_game()
