@@ -22,6 +22,7 @@ class SnakeGame:
         self.apple = Apple(self)
         self.player_body = pygame.sprite.Group()
         self.rotate = ''
+        self.clock = pygame.time.Clock()
 
     def check_events(self):
         """Check for events"""
@@ -130,6 +131,7 @@ class SnakeGame:
     def run_game(self):
         """Keep the game window open"""
         while True:
+            self.clock.tick(60)
             self.check_events()
             self.detect_collision()
             self.move_body()
