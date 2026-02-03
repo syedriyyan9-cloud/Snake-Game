@@ -10,5 +10,7 @@ class Setting:
         self.COLOR_BLUE = (0,0,255)
         self.COLOR_GREEN = (0,255,0)
         
-        self.player_speed = 5
+        self.player_speed = 20
+
+        self.CELL_SIZE = 20
 

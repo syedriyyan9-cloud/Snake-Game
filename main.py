@@ -21,8 +21,10 @@ class SnakeGame:
         self.player = Snake(self)
         self.apple = Apple(self)
         self.player_body = pygame.sprite.Group()
-        self.rotate = ''
         self.clock = pygame.time.Clock()
+        self.move_delay = 50   # milliseconds
+        self.last_move_time = pygame.time.get_ticks()
+
 
     def check_events(self):
         """Check for events"""
@@ -40,28 +42,24 @@ class SnakeGame:
                 self.player.move_down = False
                 self.player.move_left = False
                 self.player.move_right = False
-                self.rotate = 'up'
             elif event.key == pygame.K_s:
                 self.player.move_down = True
                 self.player.move_up = False
                 # self.player.move_down = False
                 self.player.move_left = False
                 self.player.move_right = False
-                self.rotate = 'down'
             elif event.key == pygame.K_a:
                 self.player.move_left = True
                 self.player.move_up = False
                 self.player.move_down = False
                 # self.player.move_left = False
                 self.player.move_right = False
-                self.rotate = 'left'
             elif event.key == pygame.K_d:
                 self.player.move_right = True
                 self.player.move_up = False
                 self.player.move_down = False
                 self.player.move_left = False
                 # self.player.move_right = False
-                self.rotate = 'right'
             elif event.key == pygame.K_q:
                 sys.exit()
 
@@ -86,45 +84,22 @@ class SnakeGame:
     def add_body(self):
         """Add player body"""
         body = Body(self)
-        # body.x
         self.player_body.add(body)
-        # print(self.player_body)
 
     def move_body(self):
         """Move player body"""
-        body = self.player.rect.copy()
+        head = self.player.rect.copy()
         for sprite in self.player_body.sprites():
-            self.set_body_position(body, sprite)
-            # The below line is written by GPT
-            body = sprite.rect.copy()
-
-    def set_body_position(self, body, sprite):
-        """Change position of body pieces"""
-        sprite.rect.x = body.x - 20
-        sprite.rect.y = body.y
-        self.change_body_direction(sprite, body)
-
-    def change_body_direction(self, sprite, body):
-        """change the direction of body based on user input"""
-        if self.rotate == 'up':
-            sprite.rect.x = body.x
-            sprite.rect.y = body.y + 20
-        elif self.rotate == 'down':
-            sprite.rect.x = body.x
-            sprite.rect.y = body.y - 20
-        elif self.rotate == 'right':
-            sprite.rect.x = body.x - 20
-            sprite.rect.y = body.y
-        elif self.rotate == 'left':
-            sprite.rect.x = body.x + 20
-            sprite.rect.y = body.y
+            tail =  head
+            head = sprite.rect.copy()
+            # self.change_body_direction(sprite, tail)
+            sprite.rect = tail
 
     def update_screen(self):
         """updates the screen"""
         self.screen.fill(self.setting.COLOR_WHITE)
         self.player.built()
         self.player_body.draw(self.screen)
-        self.player.change_position()
         self.apple.draw()
         pygame.display.flip()
 
@@ -132,9 +107,13 @@ class SnakeGame:
         """Keep the game window open"""
         while True:
             self.clock.tick(60)
-            self.check_events()
-            self.detect_collision()
-            self.move_body()
+            current_time = pygame.time.get_ticks()
+            if current_time - self.last_move_time >= self.move_delay:
+                self.last_move_time = current_time
+                self.check_events()
+                self.detect_collision()
+                self.player.change_position()
+                self.move_body()
             self.update_screen()
             
 if __name__ == '__main__':
